@@ -1,0 +1,47 @@
+#!/bin/sh
+
+title() {
+	echo -ne "\033]0;$1\007"
+}
+
+timestr() {
+	printf "%d:%02d" $(($count/60)) $(($count%60))
+}
+
+title Pomodoro
+while true; do
+	echo -e "\033[1mP\033[0momodoro session (25 min)"
+	echo -e "\033[1mS\033[0mhort pause (5 min)"
+	echo -e "\033[1mL\033[0mong pause (10 min)"
+	count=0
+	choice=""
+	while [ $count -eq 0 ]; do
+		read i
+		case $i in
+			p|P)
+				count=$((25*60))
+				choice="Pomodoro"
+				;;
+			l|L)
+				count=$((10*60))
+				choice="Pause"
+				;;
+			s|S)
+				count=$((5*60))
+				choice="Pause"
+				;;
+		esac
+	done
+
+	echo "$choice for $(timestr $count)"
+
+	while [ $count -ne 0 ]; do
+		title "$choice ($(timestr $count))"
+		sleep 1
+		count=$((count - 1))
+	done
+
+	echo "$choice over"
+	title "$choice over"
+	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null&
+done
