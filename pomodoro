@@ -33,6 +33,7 @@ while true; do
 		esac
 	done
 
+	date
 	echo "$choice for $(timestr $count)"
 
 	while [ $count -ne 0 ]; do
@@ -43,5 +44,5 @@ while true; do
 
 	echo "$choice over"
 	title "$choice over"
-	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null&
+	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null 2>&1&
 done
