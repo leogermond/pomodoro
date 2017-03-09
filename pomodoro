@@ -13,6 +13,7 @@ while true; do
 	echo -e "\033[1mP\033[0momodoro session (25 min)"
 	echo -e "\033[1mS\033[0mhort pause (5 min)"
 	echo -e "\033[1mL\033[0mong pause (10 min)"
+
 	count=0
 	choice=""
 	while [ $count -eq 0 ]; do
@@ -33,17 +34,34 @@ while true; do
 		esac
 	done
 
+	echo
 	date +%r%x
 	echo "$choice for $(timestr $count)"
-
-	while [ $count -ne 0 ]; do
+	echo -e "\033[1mS\033[0mtop $choice"
+	echo -e "\033[1m+\033[0m increase timer by one minute"
+	echo -e "\033[1m-\033[0m decrease timer by one minute"
+	while [ $count -gt 0 ]; do
 		title "$choice ($(timestr $count))"
-		sleep 1
+		read -st 1 -n 1 key
 		count=$((count - 1))
+		case $key in
+		s|S)
+			count=0
+			;;
+		-)
+			count=$(($count-60))
+			echo $(timestr $count)
+			;;
+		+)
+			count=$(($count+60))
+			echo $(timestr $count)
+			;;
+		esac
 	done
 
 	date +%r%x
 	echo "$choice over"
 	title "$choice over"
 	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null 2>&1&
+	echo
 done
