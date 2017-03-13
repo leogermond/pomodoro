@@ -13,11 +13,31 @@ getchar() {
 	echo $key
 }
 
+disp() {
+	true
+}
+
+log_echo() {
+	echo $@
+}
+
+console_clear() {
+	true
+}
+
+console_echo() {
+	echo $@
+}
+
 title Pomodoro
 while true; do
-	echo -e "\033[1mP\033[0momodoro session (25 min)"
-	echo -e "\033[1mS\033[0mhort pause (5 min)"
-	echo -e "\033[1mL\033[0mong pause (10 min)"
+	console_clear
+	console_echo -e "\033[1mP\033[0momodoro session (25 min)"
+	console_echo -e "\033[1mS\033[0mhort pause (5 min)"
+	console_echo -e "\033[1mL\033[0mong pause (10 min)"
+	console_echo -e "\033[1mQ\033[0muit"
+	console_echo
+	disp
 
 	count=0
 	choice=""
@@ -35,15 +55,19 @@ while true; do
 				count=$((5*60))
 				choice="Pause"
 				;;
+			q|Q)
+				exit 0
+				;;
 		esac
 	done
 
-	echo
 	date +%r%x
-	echo "$choice for $(timestr $count)"
-	echo -e "\033[1mS\033[0mtop $choice"
-	echo -e "\033[1m+\033[0m increase timer by one minute"
-	echo -e "\033[1m-\033[0m decrease timer by one minute"
+	console_clear
+	log_echo "$choice for $(timestr $count)"
+	console_echo -e "\033[1mS\033[0mtop $choice"
+	console_echo -e "\033[1m+\033[0m increase timer by one minute"
+	console_echo -e "\033[1m-\033[0m decrease timer by one minute"
+	disp
 	while [ $count -gt 0 ]; do
 		title "$choice ($(timestr $count))"
 		count=$((count - 1))
@@ -53,14 +77,15 @@ while true; do
 			;;
 		-)
 			count=$(($count-60))
-			echo $(timestr $count)
+			console_echo $(timestr $count)
 			;;
 		+)
 			count=$(($count+60))
-			echo $(timestr $count)
+			console_echo $(timestr $count)
 			;;
 		esac
 	done
+	disp
 
 	date +%r%x
 	echo "$choice over"
