@@ -14,19 +14,22 @@ getchar() {
 }
 
 disp() {
-	true
+	echo -e $log
+	echo "--------------------------------------------------------------------------------"
+	echo -e $console
 }
 
 log_echo() {
-	echo $@
+	log="$log\033[33m$(date "+%r")\033[0m $(echo $@)\n"
 }
 
 console_clear() {
-	true
+	console=""
+	clear
 }
 
 console_echo() {
-	echo $@
+	console="$console$(echo $@)\n"
 }
 
 title Pomodoro
@@ -36,7 +39,6 @@ while true; do
 	console_echo -e "\033[1mS\033[0mhort pause (5 min)"
 	console_echo -e "\033[1mL\033[0mong pause (10 min)"
 	console_echo -e "\033[1mQ\033[0muit"
-	console_echo
 	disp
 
 	count=0
@@ -45,14 +47,17 @@ while true; do
 		case $(getchar) in
 			p|P)
 				count=$((25*60))
+				choice_color="91"
 				choice="Pomodoro"
 				;;
 			l|L)
 				count=$((10*60))
+				choice_color="32"
 				choice="Pause"
 				;;
 			s|S)
 				count=$((5*60))
+				choice_color="32"
 				choice="Pause"
 				;;
 			q|Q)
@@ -61,9 +66,8 @@ while true; do
 		esac
 	done
 
-	date +%r%x
 	console_clear
-	log_echo "$choice for $(timestr $count)"
+	log_echo "\033[${choice_color}m$choice\033[0m for $(timestr $count)"
 	console_echo -e "\033[1mS\033[0mtop $choice"
 	console_echo -e "\033[1m+\033[0m increase timer by one minute"
 	console_echo -e "\033[1m-\033[0m decrease timer by one minute"
@@ -77,19 +81,15 @@ while true; do
 			;;
 		-)
 			count=$(($count-60))
-			console_echo $(timestr $count)
 			;;
 		+)
 			count=$(($count+60))
-			console_echo $(timestr $count)
 			;;
 		esac
 	done
 	disp
 
-	date +%r%x
-	echo "$choice over"
+	log_echo "Over"
 	title "$choice over"
 	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null 2>&1&
-	echo
 done
