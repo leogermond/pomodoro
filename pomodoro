@@ -8,6 +8,11 @@ timestr() {
 	printf "%d:%02d" $(($count/60)) $(($count%60))
 }
 
+getchar() {
+	read -s -n 1 $@ key
+	echo $key
+}
+
 title Pomodoro
 while true; do
 	echo -e "\033[1mP\033[0momodoro session (25 min)"
@@ -17,8 +22,7 @@ while true; do
 	count=0
 	choice=""
 	while [ $count -eq 0 ]; do
-		read i
-		case $i in
+		case $(getchar) in
 			p|P)
 				count=$((25*60))
 				choice="Pomodoro"
@@ -42,9 +46,8 @@ while true; do
 	echo -e "\033[1m-\033[0m decrease timer by one minute"
 	while [ $count -gt 0 ]; do
 		title "$choice ($(timestr $count))"
-		read -st 1 -n 1 key
 		count=$((count - 1))
-		case $key in
+		case $(getchar -t 1) in
 		s|S)
 			count=0
 			;;
