@@ -80,7 +80,7 @@ while true; do
 		title "$choice ($(timestr $remaining))"
 		case $(getchar -t 1) in
 		s|S)
-			count=0
+			remaining=0
 			;;
 		-)
 			count=$(($count-60))
