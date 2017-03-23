@@ -20,7 +20,7 @@ disp() {
 }
 
 log_echo() {
-	log="$log\033[33m$(date "+%r")\033[0m $(echo $@)\n"
+	log="$log\033[33m$(date "+%T")\033[0m $(echo $@)\n"
 }
 
 console_clear() {
