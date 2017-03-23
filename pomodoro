@@ -23,6 +23,10 @@ log_echo() {
 	log="$log\033[33m$(date "+%T")\033[0m $(echo $@)\n"
 }
 
+log_file() {
+	echo "[$(date +"%F %T")] $@" >> /var/log/pomodoro
+}
+
 console_clear() {
 	console=""
 	clear
@@ -33,6 +37,7 @@ console_echo() {
 }
 
 title Pomodoro
+log_file "$0 program begin"
 while true; do
 	console_clear
 	console_echo -e "\033[1mP\033[0momodoro session (25 min)"
@@ -67,6 +72,7 @@ while true; do
 	done
 
 	console_clear
+	log_file "$choice start"
 	log_echo "\033[${choice_color}m$choice\033[0m for $(timestr $count)"
 	console_echo -e "\033[1mS\033[0mtop $choice"
 	console_echo -e "\033[1m+\033[0m increase timer by one minute"
@@ -92,6 +98,7 @@ while true; do
 	done
 	disp
 
+	log_file "$choice end"
 	log_echo "Over"
 	title "$choice over"
 	aplay /usr/share/sounds/pomodoro/alert.wav >/dev/null 2>&1&
